@@ -77,29 +77,43 @@ class Actor {
     if (!(actor instanceof Actor)) {
       throw new Error(`Аргумент не является прототипом Actor`);
     }
-    if (this.left === actor.left && this.top === actor.top && this.right === actor.right && this.bottom === actor.bottom) {
+    if(Object.is(this, actor)) // уточнить альтернативу
       return false;
+    if ((this.right > actor.left && this.left < actor.right) && (this.bottom > actor.top && this.top < actor.bottom)) {
+      return true;
     }
-
-    if (this.left > actor.right)
-      return true;
-    else if (this.top < actor.bottom)
-      return true;
-    else if (this.right < actor.left)
-      return true;
-    else if (this.bottom < actor.top)
-      return true;
-    else
-      return false;
-
+    return false;
   }
 }
 
-let position = new Vector(10, 10);
-let size = new Vector(1, 1);
-const player = new Actor(new Vector(0, 0));
-const coin = new Actor(new Vector(100, 100));
-const notIntersected = player.isIntersect(coin);
+const items = new Map();
+const player = new Actor();
+items.set('Игрок', player);
+items.set('Первая монета', new Actor(new Vector(10, 10)));
+items.set('Вторая монета', new Actor(new Vector(15, 5)));
+
+function position(item) {
+  return ['left', 'top', 'right', 'bottom']
+    .map(side => `${side}: ${item[side]}`)
+    .join(', ');
+}
+
+function movePlayer(x, y) {
+  player.pos = player.pos.plus(new Vector(x, y));
+}
+
+function status(item, title) {
+  console.log(`${title}: ${position(item)}`);
+  if (player.isIntersect(item)) {
+    console.log(`Игрок подобрал ${title}`);
+  }
+}
+
+items.forEach(status);
+movePlayer(10, 10);
+items.forEach(status);
+movePlayer(5, -5);
+items.forEach(status);
 
 
 class Level {
@@ -122,21 +136,15 @@ class Level {
 
   get width() {
     return this.grid.reduce((max, val) => {
-      if (max < val.length) {
-        return val.length;
-      } else {
-        return max;
-      }
+      return max < val.length ? val.length : max;
     }, 0);
   }
 
   isFinished() {
-    if (this.status !== null && this.finishDelay < 0) {
-      return true;
-    }
-    return false;
-
+    return this.status !== null && this.finishDelay < 0 ? true : false;
   }
+
+
 }
 
 
