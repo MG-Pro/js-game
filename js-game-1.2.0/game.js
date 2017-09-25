@@ -144,6 +144,9 @@ class Level {
     return this.status !== null && this.finishDelay < 0 ? true : false;
   }
 
+  actorAt(actor) {
+
+  }
 
 }
 
