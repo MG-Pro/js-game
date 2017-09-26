@@ -13,7 +13,7 @@ class Vector {
 
   plus(vector) {
     if (!(vector instanceof Vector)) {
-      throw new Error(`Аргумент не является прототипом Vector`);
+      throw new Error(`Аргумент не является экземпляром Vector`);
     }
     let newVector = new Vector(this.x, this.y);
     newVector.x += vector.x;
@@ -32,7 +32,7 @@ class Vector {
 class Actor {
   constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
     if (!(pos instanceof Vector && size instanceof Vector && speed instanceof Vector)) {
-      throw new Error(`Аргумент не является прототипом Vector`);
+      throw new Error(`Аргумент не является экземпляром Vector`);
     }
     this.pos = pos;
     this.size = size;
@@ -75,7 +75,7 @@ class Actor {
 
   isIntersect(actor) {
     if (!(actor instanceof Actor)) {
-      throw new Error(`Аргумент не является прототипом Actor`);
+      throw new Error(`Аргумент не является экземпляром Actor`);
     }
     if(Object.is(this, actor)) // уточнить альтернативу
       return false;
@@ -85,36 +85,6 @@ class Actor {
     return false;
   }
 }
-
-const items = new Map();
-const player = new Actor();
-items.set('Игрок', player);
-items.set('Первая монета', new Actor(new Vector(10, 10)));
-items.set('Вторая монета', new Actor(new Vector(15, 5)));
-
-function position(item) {
-  return ['left', 'top', 'right', 'bottom']
-    .map(side => `${side}: ${item[side]}`)
-    .join(', ');
-}
-
-function movePlayer(x, y) {
-  player.pos = player.pos.plus(new Vector(x, y));
-}
-
-function status(item, title) {
-  console.log(`${title}: ${position(item)}`);
-  if (player.isIntersect(item)) {
-    console.log(`Игрок подобрал ${title}`);
-  }
-}
-
-items.forEach(status);
-movePlayer(10, 10);
-items.forEach(status);
-movePlayer(5, -5);
-items.forEach(status);
-
 
 class Level {
   constructor(grid = [], actors = []) {
@@ -145,10 +115,59 @@ class Level {
   }
 
   actorAt(actor) {
+    if(!actor || !(actor instanceof Actor)) {
+      throw new Error('Аргумент не является экземпляром Actor или не задан')
+    }
+
+    let a = this.actors.find((val) => {
+      actor.isIntersect(val);
+
+    });
+    return a;
 
   }
 
 }
+
+
+
+const grid = [
+  [undefined, undefined],
+  ['wall', 'wall']
+];
+
+function MyCoin(title) {
+  this.type = 'coin';
+  this.title = title;
+}
+MyCoin.prototype = Object.create(Actor);
+MyCoin.constructor = MyCoin;
+
+const goldCoin = new MyCoin('Золото');
+const bronzeCoin = new MyCoin('Бронза');
+const player = new Actor();
+const fireball = new Actor();
+
+const level = new Level(undefined, [ goldCoin, bronzeCoin, player, fireball ]);
+
+//level.playerTouched('coin', goldCoin);
+//level.playerTouched('coin', bronzeCoin);
+
+//if (level.noMoreActors('coin')) {
+//  console.log('Все монеты собраны');
+//  console.log(`Статус игры: ${level.status}`);
+//}
+
+//const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
+//if (obstacle) {
+//  console.log(`На пути препятствие: ${obstacle}`);
+//}
+
+//const otherActor = level.actorAt(player);
+//if (otherActor === fireball) {
+//  console.log('Пользователь столкнулся с шаровой молнией');
+//}
+
 
 
 class Player extends Actor {
@@ -158,14 +177,37 @@ class Player extends Actor {
   }
 }
 
-console.log(new Actor());
-let pl = new Player();
-const level = new Level([], [pl]).isFinished();
-console.log(level);
 
 
 
 
+// Shape — суперкласс
+function Shape() {
+  this.x = 0;
+  this.y = 0;
+}
+
+// метод суперкласса
+Shape.prototype.move = function(x, y) {
+  this.x += x;
+  this.y += y;
+  console.info('Фигура переместилась.');
+};
+
+// Rectangle — подкласс
+function Rectangle() {
+  Shape.call(this); // вызываем конструктор суперкласса
+}
+
+// подкласс расширяет суперкласс
+Rectangle.prototype = Object.create(Shape);
+Rectangle.prototype.constructor = Rectangle;
+
+var rect = new Rectangle();
+
+console.log('Является ли rect экземпляром Rectangle? ' + (rect instanceof Rectangle)); // true
+console.log('Является ли rect экземпляром Shape? ' + (rect instanceof Shape)); // true
+rect.move(1, 1); // выведет 'Фигура переместилась.'
 
 
 
