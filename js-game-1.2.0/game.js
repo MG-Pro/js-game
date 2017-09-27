@@ -132,13 +132,28 @@ class Level {
     size.x = Math.ceil(size.x);
     size.y = Math.ceil(size.y);
     let test = new Actor(route, size);
-    if(test.left < 0 || test.right > this.width || test.top < 0)
+    if (test.left < 0 || test.right > this.width || test.top < 0)
       return 'wall';
-    else if(test.bottom > this.height)
+    else if (test.bottom > this.height)
       return 'lava';
     else
       return this.grid[test.pos.y][test.pos.x];
   }
+
+  removeActor(actor) {
+    this.actors.map((val, i) => {
+      if (actor === val)
+        delete this.actors[i];
+    });
+  }
+
+  noMoreActors(type) {
+    return !(this.actors.some((val) => {
+      return val.type === type;
+    }));
+  }
+
+
 }
 
 
