@@ -74,10 +74,10 @@ class Actor {
   }
 
   isIntersect(actor) {
-    if (!(actor instanceof Actor)) {
+    if (!(Actor.prototype.isPrototypeOf(actor))) {
       throw new Error(`Аргумент не является экземпляром Actor`);
     }
-    if(Object.is(this, actor)) // уточнить альтернативу
+    if (Object.is(this, actor)) // уточнить альтернативу
       return false;
     if ((this.right > actor.left && this.left < actor.right) && (this.bottom > actor.top && this.top < actor.bottom)) {
       return true;
@@ -115,20 +115,31 @@ class Level {
   }
 
   actorAt(actor) {
-    if(!actor || !(actor instanceof Actor)) {
-      throw new Error('Аргумент не является экземпляром Actor или не задан')
+    if (!actor || !(actor instanceof Actor)) {
+      throw new Error('Аргумент "actorAt" не является экземпляром Actor или не задан')
     }
-
-    let a = this.actors.find((val) => {
-      actor.isIntersect(val);
-
+    return this.actors.find((val) => {
+      return actor.isIntersect(val);
     });
-    return a;
-
   }
 
+  obstacleAt(route, size) {
+    if (!(route instanceof Vector && size instanceof Vector)) {
+      throw new Error('Аргумент "obstacleAt" не является экземпляром Vector')
+    }
+    route.x = Math.ceil(route.x);
+    route.y = Math.ceil(route.y);
+    size.x = Math.ceil(size.x);
+    size.y = Math.ceil(size.y);
+    let test = new Actor(route, size);
+    if(test.left < 0 || test.right > this.width || test.top < 0)
+      return 'wall';
+    else if(test.bottom > this.height)
+      return 'lava';
+    else
+      return this.grid[test.pos.y][test.pos.x];
+  }
 }
-
 
 
 const grid = [
@@ -140,6 +151,7 @@ function MyCoin(title) {
   this.type = 'coin';
   this.title = title;
 }
+
 MyCoin.prototype = Object.create(Actor);
 MyCoin.constructor = MyCoin;
 
@@ -148,7 +160,7 @@ const bronzeCoin = new MyCoin('Бронза');
 const player = new Actor();
 const fireball = new Actor();
 
-const level = new Level(undefined, [ goldCoin, bronzeCoin, player, fireball ]);
+const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
 
 //level.playerTouched('coin', goldCoin);
 //level.playerTouched('coin', bronzeCoin);
@@ -158,57 +170,23 @@ const level = new Level(undefined, [ goldCoin, bronzeCoin, player, fireball ]);
 //  console.log(`Статус игры: ${level.status}`);
 //}
 
-//const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-//if (obstacle) {
-//  console.log(`На пути препятствие: ${obstacle}`);
+const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
+if (obstacle) {
+  console.log(`На пути препятствие: ${obstacle}`);
+}
+
+const otherActor = level.actorAt(player);
+if (otherActor === fireball) {
+  console.log('Пользователь столкнулся с шаровой молнией');
+}
+
+//
+//class Player extends Actor {
+//  constructor(vector) {
+//    super();
+//    //this.type = 'player'
+//  }
 //}
-
-//const otherActor = level.actorAt(player);
-//if (otherActor === fireball) {
-//  console.log('Пользователь столкнулся с шаровой молнией');
-//}
-
-
-
-class Player extends Actor {
-  constructor(vector) {
-    super();
-    //this.type = 'player'
-  }
-}
-
-
-
-
-
-// Shape — суперкласс
-function Shape() {
-  this.x = 0;
-  this.y = 0;
-}
-
-// метод суперкласса
-Shape.prototype.move = function(x, y) {
-  this.x += x;
-  this.y += y;
-  console.info('Фигура переместилась.');
-};
-
-// Rectangle — подкласс
-function Rectangle() {
-  Shape.call(this); // вызываем конструктор суперкласса
-}
-
-// подкласс расширяет суперкласс
-Rectangle.prototype = Object.create(Shape);
-Rectangle.prototype.constructor = Rectangle;
-
-var rect = new Rectangle();
-
-console.log('Является ли rect экземпляром Rectangle? ' + (rect instanceof Rectangle)); // true
-console.log('Является ли rect экземпляром Shape? ' + (rect instanceof Shape)); // true
-rect.move(1, 1); // выведет 'Фигура переместилась.'
-
 
 
 
