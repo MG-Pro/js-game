@@ -190,7 +190,16 @@ class LevelParser {
     else
       return undefined;
   }
-
+  createGrid(plan) {
+    let grid = [];
+    plan.forEach((val) => {
+      let row = val.split('').map((key) => {
+        return this.obstacleFromSymbol(key);
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
 }
 
 
@@ -203,7 +212,7 @@ const actorsDict = Object.create(null);
 actorsDict['@'] = Actor;
 
 const parser = new LevelParser(actorsDict);
-let constr = parser.actorFromSymbol('@')
+let constr = parser.actorFromSymbol('@');
 console.log(constr);
 //const level = parser.parse(plan);
 //
