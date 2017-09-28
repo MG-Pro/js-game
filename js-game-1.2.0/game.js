@@ -168,44 +168,42 @@ class Level {
 
 }
 
+class LevelParser {
+  constructor(actorsDict) {
+    this.dict = actorsDict;
+  }
 
-const grid = [
-  [undefined, undefined],
-  ['wall', 'wall']
+  actorFromSymbol(sym) {
+    for (let i in this.dict) {
+       if (sym === i)
+         return this.dict[i];
+    }
+    return undefined;
+  }
+}
+
+
+
+
+const plan = [
+  ' @ ',
+  'x!x'
 ];
 
-function MyCoin(title) {
-  this.type = 'coin';
-  this.title = title;
-}
+const actorsDict = Object.create(null);
+actorsDict['@'] = Actor;
 
-MyCoin.prototype = Object.create(Actor);
-MyCoin.constructor = MyCoin;
+const parser = new LevelParser(actorsDict);
+let constr = parser.actorFromSymbol('@')
+console.log(constr);
+//const level = parser.parse(plan);
+//
+//level.grid.forEach((line, y) => {
+//  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+//});
+//
+//level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
 
-const goldCoin = new MyCoin('Золото');
-const bronzeCoin = new MyCoin('Бронза');
-const player = new Actor();
-const fireball = new Actor();
-
-const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
-
-level.playerTouched('coin', goldCoin);
-level.playerTouched('coin', bronzeCoin);
-
-if (level.noMoreActors('coin')) {
-  console.log('Все монеты собраны');
-  console.log(`Статус игры: ${level.status}`);
-}
-
-const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-if (obstacle) {
-  console.log(`На пути препятствие: ${obstacle}`);
-}
-
-const otherActor = level.actorAt(player);
-if (otherActor === fireball) {
-  console.log('Пользователь столкнулся с шаровой молнией');
-}
 
 //
 //class Player extends Actor {
