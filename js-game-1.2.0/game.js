@@ -143,7 +143,7 @@ class Level {
   removeActor(actor) {
     this.actors.map((val, i) => {
       if (actor === val)
-        delete this.actors[i];
+        this.actors.splice(i, 1);
     });
   }
 
@@ -152,7 +152,19 @@ class Level {
       return val.type === type;
     }));
   }
-
+  playerTouched(type, actor) {
+    if(this.status !== null)
+      return;
+    if(type === 'lava' || type === 'fireball') {
+      this.status = 'lost';
+    }
+    if (type === 'coin') {
+      this.removeActor(actor);
+      if(this.noMoreActors(type)) {
+        this.status = 'won';
+      }
+    }
+  }
 
 }
 
@@ -177,13 +189,13 @@ const fireball = new Actor();
 
 const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
 
-//level.playerTouched('coin', goldCoin);
-//level.playerTouched('coin', bronzeCoin);
+level.playerTouched('coin', goldCoin);
+level.playerTouched('coin', bronzeCoin);
 
-//if (level.noMoreActors('coin')) {
-//  console.log('Все монеты собраны');
-//  console.log(`Статус игры: ${level.status}`);
-//}
+if (level.noMoreActors('coin')) {
+  console.log('Все монеты собраны');
+  console.log(`Статус игры: ${level.status}`);
+}
 
 const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
 if (obstacle) {
