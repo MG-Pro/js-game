@@ -152,15 +152,16 @@ class Level {
       return val.type === type;
     }));
   }
+
   playerTouched(type, actor) {
-    if(this.status !== null)
+    if (this.status !== null)
       return;
-    if(type === 'lava' || type === 'fireball') {
+    if (type === 'lava' || type === 'fireball') {
       this.status = 'lost';
     }
     if (type === 'coin') {
       this.removeActor(actor);
-      if(this.noMoreActors(type)) {
+      if (this.noMoreActors(type)) {
         this.status = 'won';
       }
     }
@@ -175,14 +176,22 @@ class LevelParser {
 
   actorFromSymbol(sym) {
     for (let i in this.dict) {
-       if (sym === i)
-         return this.dict[i];
+      if (sym === i)
+        return this.dict[i];
     }
     return undefined;
   }
+
+  obstacleFromSymbol(sym) {
+    if (sym === 'x')
+      return 'wall';
+    else if (sym === '!')
+      return 'lava';
+    else
+      return undefined;
+  }
+
 }
-
-
 
 
 const plan = [
