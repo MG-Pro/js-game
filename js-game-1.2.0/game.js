@@ -222,28 +222,35 @@ class LevelParser {
   }
 }
 
-
-const plan = [
-  ' @ ',
-  'x!x'
-];
-
-const actorsDict = Object.create(null);
-actorsDict['@'] = Actor;
-
-const parser = new LevelParser(actorsDict);
-
-
-
-const level = parser.parse(plan);
-
-level.grid.forEach((line, y) => {
-  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
-});
-
-level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
+class Fireball extends Actor {
+  constructor(pos = new Vector(0, 0), speed = new Vector(0, 0)) {
+    super();
+    this.pos = pos;
+    this.speed = speed;
+    this.size = new Vector(1, 1);
+    Object.defineProperty(this, 'type', {
+      get: function () {
+        return 'fireball';
+      }
+    });
 
 
+
+  }
+}
+
+let fireball = new Fireball();
+console.log(fireball);
+
+//const grid = [
+//  new Array(3),
+//  ['wall', 'wall', 'lava']
+//];
+//const level = new Level(grid);
+//runLevel(level, DOMDisplay);
+//
+//
+//
 //
 //class Player extends Actor {
 //  constructor(vector) {
