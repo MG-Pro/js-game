@@ -261,7 +261,14 @@ class HorizontalFireball extends Fireball {
     this.speed = new Vector(2, 0);
     this.pos = pos;
   }
+}
 
+class VerticalFireball extends Fireball {
+  constructor(pos) {
+    super();
+    this.speed = new Vector(0, 2);
+    this.pos = pos;
+  }
 }
 
 
