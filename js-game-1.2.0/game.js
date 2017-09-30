@@ -255,6 +255,14 @@ class Fireball extends Actor {
   }
 }
 
+class HorizontalFireball extends Fireball {
+  constructor(pos) {
+    super();
+    this.speed = new Vector(2, 0);
+    this.pos = pos;
+  }
+
+}
 
 
 //const grid = [
