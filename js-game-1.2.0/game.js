@@ -233,14 +233,29 @@ class Fireball extends Actor {
         return 'fireball';
       }
     });
+  }
 
+  getNextPosition(time = 1) {
+    return new Vector(this.pos.x + this.speed.x * time, this.pos.y + this.speed.y * time);
+  }
 
+  handleObstacle() {
+    this.speed.x *= -1;
+    this.speed.y *= -1;
+  }
 
+  act(time, level) {
+    let obstacle = level.obstacleAt(this.getNextPosition(time), this.size);
+    if(!obstacle) {
+      this.pos.x = this.pos.x + this.speed.x * time;
+      this.pos.y = this.pos.y + this.speed.y * time;
+    } else {
+      this.handleObstacle();
+    }
   }
 }
 
-let fireball = new Fireball();
-console.log(fireball);
+
 
 //const grid = [
 //  new Array(3),
