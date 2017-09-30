@@ -216,6 +216,10 @@ class LevelParser {
     });
     return actors;
   }
+
+  parse(plan) {
+    return new Level(this.createGrid(plan), this.createActors(plan));
+  }
 }
 
 
@@ -228,18 +232,16 @@ const actorsDict = Object.create(null);
 actorsDict['@'] = Actor;
 
 const parser = new LevelParser(actorsDict);
-let constr = parser.actorFromSymbol('@');
-let actors = parser.createActors(plan);
-console.log(actors);
 
 
-//const level = parser.parse(plan);
-//
-//level.grid.forEach((line, y) => {
-//  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
-//});
-//
-//level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
+
+const level = parser.parse(plan);
+
+level.grid.forEach((line, y) => {
+  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+});
+
+level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
 
 
 //
