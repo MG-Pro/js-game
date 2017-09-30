@@ -190,6 +190,7 @@ class LevelParser {
     else
       return undefined;
   }
+
   createGrid(plan) {
     let grid = [];
     plan.forEach((val) => {
@@ -199,6 +200,21 @@ class LevelParser {
       grid.push(row);
     });
     return grid;
+  }
+
+  createActors(plan) {
+    let actors = [];
+    if (!this.dict)
+      return actors;
+    plan.forEach((val, y) => {
+      val.split('').forEach((key, x) => {
+        let constr = this.actorFromSymbol(key);
+        if (constr && (constr.prototype instanceof Actor || constr == Actor)) {
+          actors.push(new constr(new Vector(x, y)));
+        }
+      });
+    });
+    return actors;
   }
 }
 
@@ -213,7 +229,10 @@ actorsDict['@'] = Actor;
 
 const parser = new LevelParser(actorsDict);
 let constr = parser.actorFromSymbol('@');
-console.log(constr);
+let actors = parser.createActors(plan);
+console.log(actors);
+
+
 //const level = parser.parse(plan);
 //
 //level.grid.forEach((line, y) => {
