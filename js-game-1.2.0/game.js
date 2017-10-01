@@ -288,23 +288,73 @@ class FireRain extends Fireball {
   }
 }
 
+class Coin extends Actor {
+  constructor(pos) {
+    super(pos);
+    if (pos)
+      this.pos = pos;
+    this.size = new Vector(0.6, 0.6);
+    this.pos = this.pos.plus(new Vector(0.2, 0.1));
+    Object.defineProperty(this, 'type', {
+      get: function () {
+        return 'coin';
+      }
+    });
+    this.springSpeed = 8;
+    this.springDist = 0.07;
+    this.spring = rand(0, 2* Math.PI);
+    this.startPos = new Vector(this.pos.x, this.pos.y);
+  }
 
-//const grid = [
-//  new Array(3),
-//  ['wall', 'wall', 'lava']
-//];
-//const level = new Level(grid);
-//runLevel(level, DOMDisplay);
-//
-//
-//
-//
-//class Player extends Actor {
-//  constructor(vector) {
-//    super();
-//    //this.type = 'player'
-//  }
-//}
+  updateSpring(time = 1) {
+    this.spring = this.spring + this.springSpeed * time;
+  }
+
+  getSpringVector() {
+    return new Vector(0, Math.sin(this.spring) * this.springDist);
+  }
+
+  getNextPosition(time = 1) {
+    this.spring += this.springSpeed * time;
+    let a = this.startPos.plus(this.getSpringVector());
+    return new Vector(a.x, a.y);
+  }
+
+  act(time) {
+    let newPos = this.getNextPosition(time);
+    this.pos.x = newPos.x;
+    this.pos.y = newPos.y;
+  }
+}
+
+class Player extends Actor {
+  constructor(pos) {
+    super(pos);
+    Object.defineProperty(this, 'type', {
+      get: function () {
+        return 'player';
+      }
+    });
+    if (pos)
+      this.pos = pos;
+    this.size = new Vector(0.8, 1.5);
+    this.pos = this.pos.plus(new Vector(0, -0.5));
+    this.speed = new Vector(0, 0);
+  }
+}
+
+
+
+const grid = [
+  new Array(3),
+  ['wall', 'wall', 'lava']
+];
+const level = new Level(grid);
+runLevel(level, DOMDisplay);
+
+
+
+
 
 
 
