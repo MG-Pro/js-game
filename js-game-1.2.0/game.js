@@ -246,7 +246,7 @@ class Fireball extends Actor {
 
   act(time, level) {
     let obstacle = level.obstacleAt(this.getNextPosition(time), this.size);
-    if(!obstacle) {
+    if (!obstacle) {
       this.pos.x = this.pos.x + this.speed.x * time;
       this.pos.y = this.pos.y + this.speed.y * time;
     } else {
@@ -257,26 +257,29 @@ class Fireball extends Actor {
 
 class HorizontalFireball extends Fireball {
   constructor(pos) {
-    super();
+    super(pos);
     this.speed = new Vector(2, 0);
-    this.pos = pos;
+    if (pos)
+      this.pos = pos;
   }
 }
 
 class VerticalFireball extends Fireball {
   constructor(pos) {
-    super();
+    super(pos);
     this.speed = new Vector(0, 2);
-    this.pos = pos;
+    if (pos)
+      this.pos = pos;
   }
 }
 
 class FireRain extends Fireball {
   constructor(pos) {
-    super();
+    super(pos);
     this.speed = new Vector(0, 3);
-    this.pos = pos;
-    this.startPos = new Vector(pos.x, pos.y)
+    if (pos)
+      this.pos = pos;
+    this.startPos = new Vector(this.pos.x, this.pos.y);
   }
 
   handleObstacle() {
