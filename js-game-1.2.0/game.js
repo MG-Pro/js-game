@@ -1,10 +1,5 @@
 'use strict';
 
-//loadLevels()
-//  .then(result => {
-//    return JSON.parse(result);
-//  });
-
 class Vector {
   constructor(startX = 0, startY = 0) {
     this.x = startX;
@@ -57,12 +52,6 @@ class Actor {
         return this.pos.y + this.size.y;
       }
     });
-    //Object.defineProperty(this, 'type', {
-    //  value: 'actor',
-    //  writable: true,
-    //  configurable: true
-    //});
-
   }
 
   get type() {
@@ -166,7 +155,6 @@ class Level {
       }
     }
   }
-
 }
 
 class LevelParser {
@@ -302,7 +290,7 @@ class Coin extends Actor {
     });
     this.springSpeed = 8;
     this.springDist = 0.07;
-    this.spring = rand(0, 2* Math.PI);
+    this.spring = rand(0, 2 * Math.PI);
     this.startPos = new Vector(this.pos.x, this.pos.y);
   }
 
@@ -344,14 +332,24 @@ class Player extends Actor {
 }
 
 
+loadLevels()
+  .then(result => {
+    const schemas = JSON.parse(result);
 
-const grid = [
-  new Array(3),
-  ['wall', 'wall', 'lava']
-];
-const level = new Level(grid);
-runLevel(level, DOMDisplay);
+    const actorDict = {
+      '@': Player,
+      'v': FireRain,
+      'o': Coin,
+      '=': HorizontalFireball,
+      '|': VerticalFireball
 
+    };
+
+    runGame(schemas, new LevelParser(actorDict), DOMDisplay)
+      .then(() => console.log('Вы выиграли приз!'))
+      .catch((e) => console.log(e));
+
+  });
 
 
 
