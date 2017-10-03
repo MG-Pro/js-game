@@ -59,7 +59,7 @@ class Actor {
   }
 
   act() {
-    return true;
+
   }
 
   isIntersect(actor) {
@@ -126,7 +126,7 @@ class Level {
     else if (test.bottom > this.height)
       return 'lava';
     else
-      return this.grid[test.pos.y][test.pos.x];
+      return this.grid[test.pos.y + 1][test.pos.x + 1];
   }
 
   removeActor(actor) {
@@ -338,10 +338,10 @@ loadLevels()
 
     const actorDict = {
       '@': Player,
-      'v': FireRain,
-      'o': Coin,
-      '=': HorizontalFireball,
-      '|': VerticalFireball
+      //'v': FireRain,
+      //'o': Coin,
+      //'=': HorizontalFireball,
+      //'|': VerticalFireball
 
     };
 
