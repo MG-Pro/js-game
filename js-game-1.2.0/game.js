@@ -126,7 +126,7 @@ class Level {
     else if (test.bottom > this.height)
       return 'lava';
     else
-      return this.grid[test.pos.y + 1][test.pos.x + 1];
+      return this.grid[test.pos.y][test.pos.x];
   }
 
   removeActor(actor) {
