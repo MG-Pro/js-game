@@ -116,17 +116,21 @@ class Level {
     if (!(route instanceof Vector && size instanceof Vector)) {
       throw new Error('Аргумент "obstacleAt" не является экземпляром Vector')
     }
-    route.x = Math.ceil(route.x);
-    route.y = Math.ceil(route.y);
-    size.x = Math.ceil(size.x);
-    size.y = Math.ceil(size.y);
+
     let test = new Actor(route, size);
     if (test.left < 0 || test.right > this.width || test.top < 0)
       return 'wall';
     else if (test.bottom > this.height)
       return 'lava';
-    else
-      return this.grid[test.pos.y][test.pos.x];
+    else {
+      for (let y = Math.floor(test.top); y < test.bottom; y++) {
+        for (let x = Math.floor(test.left); x < test.right; x++) {
+          if (this.grid[y][x] !== undefined) {
+            return this.grid[y][x];
+          }
+        }
+      }
+    }
   }
 
   removeActor(actor) {
@@ -338,10 +342,10 @@ loadLevels()
 
     const actorDict = {
       '@': Player,
-      //'v': FireRain,
-      //'o': Coin,
-      //'=': HorizontalFireball,
-      //'|': VerticalFireball
+      'v': FireRain,
+      'o': Coin,
+      '=': HorizontalFireball,
+      '|': VerticalFireball
 
     };
 
