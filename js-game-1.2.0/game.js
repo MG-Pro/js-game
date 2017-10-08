@@ -10,14 +10,14 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error(`Аргумент не является экземпляром Vector`);
     }
-    let newVector = new Vector(this.x, this.y);
+    const newVector = new Vector(this.x, this.y);
     newVector.x += vector.x;
     newVector.y += vector.y;
     return newVector;
   }
 
   times(mult) {
-    let newVector = new Vector(this.x, this.y);
+    const newVector = new Vector(this.x, this.y);
     newVector.x *= mult;
     newVector.y *= mult;
     return newVector;
@@ -64,9 +64,9 @@ class Actor {
 
   isIntersect(actor) {
     if (!(Actor.prototype.isPrototypeOf(actor))) {
-      throw new Error(`Аргумент не является экземпляром Actor`);
+      throw new Error(`Аргумент isIntersect не является экземпляром Actor`);
     }
-    if (Object.is(this, actor)) // уточнить альтернативу
+    if (Object.is(this, actor))
       return false;
     if ((this.right > actor.left && this.left < actor.right) && (this.bottom > actor.top && this.top < actor.bottom)) {
       return true;
@@ -117,7 +117,7 @@ class Level {
       throw new Error('Аргумент "obstacleAt" не является экземпляром Vector')
     }
 
-    let test = new Actor(route, size);
+    const test = new Actor(route, size);
     if (test.left < 0 || test.right > this.width || test.top < 0)
       return 'wall';
     else if (test.bottom > this.height)
@@ -134,7 +134,7 @@ class Level {
   }
 
   removeActor(actor) {
-    this.actors.map((val, i) => {
+    this.actors.forEach((val, i) => {
       if (actor === val)
         this.actors.splice(i, 1);
     });
@@ -184,7 +184,7 @@ class LevelParser {
   }
 
   createGrid(plan) {
-    let grid = [];
+    const grid = [];
     plan.forEach((val) => {
       let row = val.split('').map((key) => {
         return this.obstacleFromSymbol(key);
@@ -195,12 +195,12 @@ class LevelParser {
   }
 
   createActors(plan) {
-    let actors = [];
+    const actors = [];
     if (!this.dict)
       return actors;
     plan.forEach((val, y) => {
       val.split('').forEach((key, x) => {
-        let constr = this.actorFromSymbol(key);
+        const constr = this.actorFromSymbol(key);
         if (constr && (constr.prototype instanceof Actor || constr == Actor)) {
           actors.push(new constr(new Vector(x, y)));
         }
@@ -308,12 +308,12 @@ class Coin extends Actor {
 
   getNextPosition(time = 1) {
     this.spring += this.springSpeed * time;
-    let a = this.startPos.plus(this.getSpringVector());
+    const a = this.startPos.plus(this.getSpringVector());
     return new Vector(a.x, a.y);
   }
 
   act(time) {
-    let newPos = this.getNextPosition(time);
+    const newPos = this.getNextPosition(time);
     this.pos.x = newPos.x;
     this.pos.y = newPos.y;
   }
@@ -335,7 +335,6 @@ class Player extends Actor {
   }
 }
 
-
 loadLevels()
   .then(result => {
     const schemas = JSON.parse(result);
@@ -346,13 +345,11 @@ loadLevels()
       'o': Coin,
       '=': HorizontalFireball,
       '|': VerticalFireball
-
     };
 
     runGame(schemas, new LevelParser(actorDict), DOMDisplay)
-      .then(() => console.log('Вы выиграли приз!'))
+      .then(() => alert('Вы выиграли приз!'))
       .catch((e) => console.log(e));
-
   });
 
 
