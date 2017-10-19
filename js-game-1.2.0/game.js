@@ -10,17 +10,11 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error(`Аргумент не является экземпляром Vector`);
     }
-    const newVector = new Vector(this.x, this.y);
-    newVector.x += vector.x;
-    newVector.y += vector.y;
-    return newVector;
+    return new Vector(this.x + vector.x, this.y + vector.y);
   }
 
   times(mult) {
-    const newVector = new Vector(this.x, this.y);
-    newVector.x *= mult;
-    newVector.y *= mult;
-    return newVector;
+    return new Vector(this.x * mult, this.y * mult);
   }
 }
 
@@ -117,14 +111,14 @@ class Level {
       throw new Error('Аргумент "obstacleAt" не является экземпляром Vector')
     }
 
-    const test = new Actor(route, size);
-    if (test.left < 0 || test.right > this.width || test.top < 0)
+    const testActor = new Actor(route, size); // нужен, чтобы пользоваться свойствами Actor
+    if (testActor.left < 0 || testActor.right > this.width || testActor.top < 0)
       return 'wall';
-    else if (test.bottom > this.height)
+    else if (testActor.bottom > this.height)
       return 'lava';
     else {
-      for (let y = Math.floor(test.top); y < test.bottom; y++) {
-        for (let x = Math.floor(test.left); x < test.right; x++) {
+      for (let y = Math.floor(testActor.top); y < testActor.bottom; y++) {
+        for (let x = Math.floor(testActor.left); x < testActor.right; x++) {
           if (this.grid[y][x] !== undefined) {
             return this.grid[y][x];
           }
@@ -271,12 +265,11 @@ class FireRain extends Fireball {
     this.speed = new Vector(0, 3);
     if (pos)
       this.pos = pos;
-    this.startPos = new Vector(this.pos.x, this.pos.y);
+    this.startPos = pos;
   }
 
   handleObstacle() {
-    this.pos.x = this.startPos.x;
-    this.pos.y = this.startPos.y;
+    this.pos = this.startPos;
   }
 }
 
